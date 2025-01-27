@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoboEdu ERP</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .neubrutalism {
+            border: 3px solid #000;
+            box-shadow: 5px 5px 0px #000;
+            transition: all 0.2s ease;
+        }
+        .neubrutalism:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px #000;
+        }
+        .active-tab {
+            background-color: #4CAF50;
+            color: white;
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #f0f2f5;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="min-h-screen">
+        <!-- Login Section -->
+        <div id="loginSection" class="flex items-center justify-center min-h-screen p-4">
+            <div class="w-full max-w-md p-6 bg-white neubrutalism">
+                <h1 class="text-3xl font-bold mb-6 text-center">RoboEdu ERP</h1>
+                <div class="space-y-4">
+                    <input type="email" id="loginEmail" placeholder="Email" class="w-full p-3 neubrutalism">
+                    <input type="password" id="loginPassword" placeholder="Password" class="w-full p-3 neubrutalism">
+                    <select id="loginRole" class="w-full p-3 neubrutalism">
+                        <option value="">Select Role</option>
+                        <option value="admin">Admin</option>
+                        <option value="school">School</option>
+                        <option value="trainer">Trainer</option>
+                    </select>
+                    <button onclick="login()" class="w-full p-3 bg-blue-500 text-white neubrutalism">Login</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="adminDashboard" class="hidden">
+            <nav class="bg-white p-4 neubrutalism mb-6">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+                    <button onclick="logout()" class="p-2 bg-red-500 text-white neubrutalism">Logout</button>
+                </div>
+            </nav>
+            <div class="container mx-auto p-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="p-6 bg-white neubrutalism">
+                        <h3 class="text-xl font-bold mb-2">Total Schools</h3>
+                        <p class="text-3xl" id="schoolCount">0</p>
+                    </div>
+                    <div class="p-6 bg-white neubrutalism">
+                        <h3 class="text-xl font-bold mb-2">Total Students</h3>
+                        <p class="text-3xl" id="studentCount">0</p>
+                    </div>
+                    <div class="p-6 bg-white neubrutalism">
+                        <h3 class="text-xl font-bold mb-2">Total Trainers</h3>
+                        <p class="text-3xl" id="trainerCount">0</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- School Registration -->
+                    <div class="bg-white p-6 neubrutalism">
+                        <h2 class="text-xl font-bold mb-4">Register New School</h2>
+                        <form id="schoolRegForm" class="space-y-4">
+                            <input type="text" placeholder="School Name" class="w-full p-3 neubrutalism">
+                            <input type="email" placeholder="School Email" class="w-full p-3 neubrutalism">
+                            <input type="text" placeholder="Contact Person" class="w-full p-3 neubrutalism">
+                            <button type="submit" class="w-full p-3 bg-green-500 text-white neubrutalism">Register School</button>
+                        </form>
+                    </div>
+
+                    <!-- Trainer Registration -->
+                    <div class="bg-white p-6 neubrutalism">
+                        <h2 class="text-xl font-bold mb-4">Register New Trainer</h2>
+                        <form id="trainerRegForm" class="space-y-4">
+                            <input type="text" placeholder="Trainer Name" class="w-full p-3 neubrutalism">
+                            <input type="email" placeholder="Trainer Email" class="w-full p-3 neubrutalism">
+                            <select class="w-full p-3 neubrutalism">
+                                <option value="">Assign School</option>
+                            </select>
+                            <button type="submit" class="w-full p-3 bg-blue-500 text-white neubrutalism">Register Trainer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- School Dashboard -->
+        <div id="schoolDashboard" class="hidden">
+            <nav class="bg-white p-4 neubrutalism mb-6">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-2xl font-bold">School Dashboard</h1>
+                    <button onclick="logout()" class="p-2 bg-red-500 text-white neubrutalism">Logout</button>
+                </div>
+            </nav>
+            <div class="container mx-auto p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="p-6 bg-white neubrutalism">
+                        <h3 class="text-xl font-bold mb-2">Total Students</h3>
+                        <p class="text-3xl" id="schoolStudentCount">0</p>
+                    </div>
+                    <div class="p-6 bg-white neubrutalism">
+                        <h3 class="text-xl font-bold mb-2">Sessions Completed</h3>
+                        <p class="text-3xl" id="sessionCount">0</p>
+                    </div>
+                </div>
+
+                <!-- Student Registration -->
+                <div class="bg-white p-6 neubrutalism mb-6">
+                    <h2 class="text-xl font-bold mb-4">Student Registration</h2>
+                    <div class="flex gap-4 mb-4">
+                        <button onclick="showIndividualReg()" class="p-3 neubrutalism">Individual Registration</button>
+                        <button onclick="showBulkReg()" class="p-3 neubrutalism">Bulk Registration</button>
+                    </div>
+                    <div id="individualReg">
+                        <form id="studentRegForm" class="space-y-4">
+                            <input type="text" placeholder="Student Name" class="w-full p-3 neubrutalism">
+                            <input type="text" placeholder="Roll Number" class="w-full p-3 neubrutalism">
+                            <input type="text" placeholder="Class" class="w-full p-3 neubrutalism">
+                            <button type="submit" class="w-full p-3 bg-green-500 text-white neubrutalism">Register Student</button>
+                        </form>
+                    </div>
+                    <div id="bulkReg" class="hidden">
+                        <form id="bulkUploadForm" class="space-y-4">
+                            <input type="file" accept=".xlsx,.xls" class="w-full p-3 neubrutalism">
+                            <button type="submit" class="w-full p-3 bg-blue-500 text-white neubrutalism">Upload Excel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trainer Dashboard -->
+        <div id="trainerDashboard" class="hidden">
+            <nav class="bg-white p-4 neubrutalism mb-6">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-2xl font-bold">Trainer Dashboard</h1>
+                    <button onclick="logout()" class="p-2 bg-red-500 text-white neubrutalism">Logout</button>
+                </div>
+            </nav>
+            <div class="container mx-auto p-4">
+                <!-- Session Management -->
+                <div class="bg-white p-6 neubrutalism mb-6">
+                    <h2 class="text-xl font-bold mb-4">Create New Session</h2>
+                    <form id="sessionForm" class="space-y-4">
+                        <select class="w-full p-3 neubrutalism">
+                            <option value="">Select School</option>
+                        </select>
+                        <select class="w-full p-3 neubrutalism">
+                            <option value="">Select Class</option>
+                        </select>
+                        <input type="date" class="w-full p-3 neubrutalism">
+                        <input type="text" placeholder="Topic" class="w-full p-3 neubrutalism">
+                        <button type="submit" class="w-full p-3 bg-green-500 text-white neubrutalism">Create Session</button>
+                    </form>
+                </div>
+
+                <!-- Attendance Section -->
+                <div class="bg-white p-6 neubrutalism">
+                    <h2 class="text-xl font-bold mb-4">Mark Attendance</h2>
+                    <div class="space-y-4">
+                        <select class="w-full p-3 neubrutalism" onchange="loadStudents()">
+                            <option value="">Select Session</option>
+                        </select>
+                        <div id="attendanceList" class="space-y-2">
+                            <!-- Student attendance checkboxes will be populated here -->
+                        </div>
+                        <button onclick="submitAttendance()" class="w-full p-3 bg-blue-500 text-white neubrutalism">Submit Attendance</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Login functionality
+        function login() {
+            const role = document.getElementById('loginRole').value;
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password || !role) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById(`${role}Dashboard`).classList.remove('hidden');
+        }
+
+        function logout() {
+            document.querySelectorAll('[id$="Dashboard"]').forEach(elem => elem.classList.add('hidden'));
+            document.getElementById('loginSection').classList.remove('hidden');
+        }
+
+        // Student Registration Toggle
+        function showIndividualReg() {
+            document.getElementById('individualReg').classList.remove('hidden');
+            document.getElementById('bulkReg').classList.add('hidden');
+        }
+
+        function showBulkReg() {
+            document.getElementById('individualReg').classList.add('hidden');
+            document.getElementById('bulkReg').classList.remove('hidden');
+        }
+
+        // Form Submissions
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Form submitted successfully!');
+                form.reset();
+            });
+        });
+
+        // Attendance Management
+        function loadStudents() {
+            const attendanceList = document.getElementById('attendanceList');
+            attendanceList.innerHTML = `
+                <div class="flex items-center justify-between p-2 neubrutalism">
+                    <span>John Doe</span>
+                    <input type="checkbox" class="h-5 w-5">
+                </div>
+                <div class="flex items-center justify-between p-2 neubrutalism">
+                    <span>Jane Smith</span>
+                    <input type="checkbox" class="h-5 w-5">
+                </div>
+            `;
+        }
+
+        function submitAttendance() {
+            alert('Attendance submitted successfully!');
+        }
+
+        // Initialize some demo data
+        document.getElementById('schoolCount').textContent = '5';
+        document.getElementById('studentCount').textContent = '150';
+        document.getElementById('trainerCount').textContent = '8';
+        document.getElementById('schoolStudentCount').textContent = '30';
+        document.getElementById('sessionCount').textContent = '12';
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
